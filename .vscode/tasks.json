@@ -1,0 +1,66 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "create bin folder for active file",
+      "command": "mkdir",
+      "args": ["-p", "${workspaceFolder}/${relativeFileDirname}/bin/"],
+      "windows": {
+        "command": "if not exist ${workspaceFolder}\\${relativeFileDirname}\\bin\\ mkdir",
+        "args": ["${workspaceFolder}\\${relativeFileDirname}\\bin\\"]
+      },
+      "group": "none"
+    },
+    {
+      "type": "shell",
+      "label": "Mac/Win32: build active c/c++ file to /bin/ folder",
+      "dependsOn": ["create bin folder for active file"],
+      "command": "/usr/bin/clang++",
+      "args": [
+        "-std=c++17",
+        "-stdlib=libc++",
+        "-I",
+        "${workspaceFolder}/lib",
+        "-g",
+        "${file}",
+        "-o",
+        "${workspaceFolder}/${relativeFileDirname}/bin/${fileBasenameNoExtension}"
+      ],
+      "windows": {
+        "command": "C:/Program Files/CodeBlocks/MinGW/bin/g++.exe",
+        "args": [
+          "-std=c++17",
+          "-fdiagnostics-color=always",
+          "-I",
+          "${workspaceFolder}/lib",
+          "-g",
+          "${file}",
+          "-o",
+          "${workspaceFolder}\\${relativeFileDirname}\\bin\\${fileBasenameNoExtension}.exe"
+        ]
+      },
+      "linux": {
+        "command": "/usr/bin/g++",
+        "args": [
+          // "-std=c++17",
+          // "-stdlib=libc++",
+          "-I",
+          "${workspaceFolder}/lib",
+          "-g",
+          "${file}",
+          "-o",
+          "${workspaceFolder}/${relativeFileDirname}/bin/${fileBasenameNoExtension}"
+        ]
+      },
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

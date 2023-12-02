@@ -15,7 +15,7 @@ vector<bool> gen_doors() {
 }
 
 void print_result(int total, int wins) {
-    cout << "Won:   " << wins << " (" << round(((float) wins) / total * 100) << "%)" << "\n"
+    cout << "Won:   " << wins << " (" << round(((float) wins) / total * 1000) / 10 << "%)" << "\n"
          << "Lost:  " << total - wins << "\n"
          << "Total: " << total << endl;
 }
@@ -29,70 +29,31 @@ int main() {
     for (int i = 0; i < a; i++) {
         auto doors = gen_doors();
         int first_choice = dist3(gen);
+        
+        set<int> tmp1 = {0, 1, 2};
+        tmp1.erase(first_choice);
         int open_door;
-        switch (first_choice) {
-            case 0:
-                if (doors[1]) open_door = 2;
-                else if (doors[2]) open_door = 1;
-                else open_door = dist2(gen) + 1;
-                break;
-            case 1:
-                if (doors[0]) open_door = 2;
-                else if (doors[2]) open_door = 0;
-                else open_door = dist2(gen) * 2;
-                break;
-            case 2:
-                if (doors[0]) open_door = 1;
-                else if (doors[1]) open_door = 0;
-                else open_door = dist2(gen);
-                break;
-        }
-        set<int> tmp = {0, 1, 2};
-        tmp.erase(first_choice);
-        tmp.erase(open_door);
-        if (doors[*tmp.begin()]) wins++;
+        if (doors[*tmp1.begin()]) open_door = *++tmp1.begin();
+        else if (doors[*++tmp1.begin()]) open_door = *tmp1.begin();
+        else open_door = dist2(gen) ? *++tmp1.begin() : *tmp1.begin();
+
+        set<int> tmp2 = {0, 1, 2};
+        tmp2.erase(first_choice);
+        tmp2.erase(open_door);
+        if (doors[*tmp2.begin()]) wins++;
     }
     print_result(a, wins);
 
     wins = 0;
     for (int i = 0; i < a; i++) {
         auto doors = gen_doors();
-        int open_door;
-        if (doors[0]) open_door = dist2(gen) + 1;
-        else if (doors[1]) open_door = dist2(gen) * 2;
-        else if (doors[2]) open_door = dist2(gen);
-        int first_choice;
-        switch (open_door) {
-            case 0:
-                if (doors[1] == doors[2]) return -1;
-                first_choice = dist2(gen) + 1;
-                break;
-            case 1:
-                if (doors[0] == doors[2]) return -1;
-                first_choice = dist2(gen) * 2;
-                break;
-            case 2:
-                if (doors[0] == doors[1]) return -1;
-                first_choice = dist2(gen);
-                break;
-        }
-        set<int> tmp = {0, 1, 2};
-        tmp.erase(first_choice);
-        tmp.erase(open_door);
-        if (doors[*tmp.begin()]) wins++;
-    }
-    print_result(a, wins);
-
-    wins = 0;
-    for (int i = 0; i < a; i++) {
-        auto doors = gen_doors();
-        int open_door;
-        if (doors[0]) open_door = dist2(gen) + 1;
-        else if (doors[1]) open_door = dist2(gen) * 2;
-        else if (doors[2]) open_door = dist2(gen);
+        set<int> tmp1 = {0, 1, 2};
+        for (int j = 0; j < 3; j++) if (doors[j]) tmp1.erase(j);
+        int open_door = dist2(gen) ? *++tmp1.begin() : *tmp1.begin();
         doors.erase(doors.begin() + open_door);
+
         int first_choice = dist2(gen);
-        if (doors[!first_choice]) wins += 1;
+        if (doors[!first_choice]) wins++;
     }
     print_result(a, wins);
 

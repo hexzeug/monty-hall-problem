@@ -15,13 +15,15 @@ vector<bool> gen_doors() {
 }
 
 void print_result(int total, int wins) {
-    cout << "Won: " << wins << "\nLost: " << total - wins << "\nTotal: " << total << endl;
+    cout << "Won:   " << wins << " (" << round(((float) wins) / total * 100) << "%)" << "\n"
+         << "Lost:  " << total - wins << "\n"
+         << "Total: " << total << endl;
 }
 
 int main() {
 
     int a, wins;
-    cin >> a;
+    a = 1'000'000;
 
     wins = 0;
     for (int i = 0; i < a; i++) {
@@ -45,7 +47,10 @@ int main() {
                 else open_door = dist2(gen);
                 break;
         }
-        if (doors[(first_choice + open_door) % 3]) wins++;
+        set<int> tmp = {0, 1, 2};
+        tmp.erase(first_choice);
+        tmp.erase(open_door);
+        if (doors[*tmp.begin()]) wins++;
     }
     print_result(a, wins);
 
@@ -71,7 +76,10 @@ int main() {
                 first_choice = dist2(gen);
                 break;
         }
-        if (doors[(first_choice + open_door) % 3]) wins += 1;
+        set<int> tmp = {0, 1, 2};
+        tmp.erase(first_choice);
+        tmp.erase(open_door);
+        if (doors[*tmp.begin()]) wins++;
     }
     print_result(a, wins);
 
